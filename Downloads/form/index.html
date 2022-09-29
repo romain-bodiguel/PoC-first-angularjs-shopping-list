@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr" ng-app="myApp" ng-controller="myCtrl">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link rel="icon" href="{{favicon}}" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+    <script src="https://code.angularjs.org/1.8.2/angular.js"></script>
+    <script src="app.js"></script>
+    <title>{{listTitle}}</title>
+</head>
+
+<body>
+    <div class="container">
+        <form class="col-3 mt-2">
+            <select class="form-select mb-5 border border-top-0 border-start-0 border-end-0 rounded-0 ps-0" style="font-size: .7em">
+                <option value="" selected>Sélectionnez votre favicon :</option>
+                <option value="{{icon}}" ng-repeat="icon in favicons" ng-click="selectedIcon(icon)">{{icon}}</option>
+            </select>
+        </form>
+
+        <h1 class="h1 mt-5" ng-show="!titleUpdate">
+            {{listTitle}}
+            <button class="bi bi-pencil btn btn-link" ng-click="updateTitle()"></button>
+        </h1>
+
+        <form class="input-group h1 mt-5" ng-show="titleUpdate" ng-submit="updateNewTitle(listTitle)">
+            <input class="form-control border-top-0 border-start-0 border-end-0 rounded-0" ng-model="listTitle">
+            <button type="submit" class="btn btn-link text-success bi bi-check2 bg-success text-white"></button>
+        </form>
+
+        <p>{{productsCount()}}</p>
+
+        <div class="mb-3">
+            <ul class="list-group">
+                <li class="list-group-item d-inline-flex container-fluid" ng-repeat="item in products">
+                    <p class="col-9 mb-0" ng-show="!update || indexOfUpdatedProduct != $index">
+                        <button class="bi bi-pencil btn btn-link" ng-click="updateItem($index)"></button>
+                        {{item.product}}
+                    </p>
+
+                    <form class="input-group" ng-submit="updateItemName($index, item.product)">
+                        <input class="form-control" ng-show="indexOfUpdatedProduct == $index" ng-model="item.product">
+                        <button type="submit" ng-show="indexOfUpdatedProduct == $index" class="btn btn-link me-4 bi bi-check2 bg-success text-white"></button>
+                    </form>
+
+                    <select ng-hide="otherQuantity" class="float-end form-select me-2 border border-top-0 border-start-0 border-end-0 rounded-0" style="width:10em;">
+                        <option value="{{item.quantity}}" selected>Quantité : {{item.quantity}}</option>
+                        <option value="{{quantity}}" ng-repeat="quantity in selectQuantity()">{{quantity}}</option>
+                    </select>
+
+                    <button class="float-end col-1 bi bi-trash3 btn btn-link text-danger" style="width:3em;" ng-click="removeItem($index)"></button>
+
+                </li>
+            </ul>
+        </div>
+
+        <form class="input-group" name="form" ng-submit="addItem()">
+            <input class="form-control" type="text" placeholder="Saisissez votre item" ng-model="newProduct.product">
+
+            <select class="form-select float-end" ng-model="newProduct.quantity">
+                <option value="" selected>Sélectionnez la quantité</option>
+                <option value="{{quantity}}" ng-repeat="quantity in selectQuantity()">{{quantity}}</option>
+            </select>
+
+            <button class="btn btn-primary" type="submit">Ajouter</button>
+        </form>
+
+        <p class="mt-1 text-danger">
+            <button ng-show="errortext != ''" class="bi bi-x-circle btn btn-link text-danger ps-0 pe-1" ng-click="removeError()"></button>
+            {{errortext}}
+        </p>
+    </div>
+</body>
+</html>
